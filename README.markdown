@@ -8,21 +8,14 @@ same license.
 Only allows for connecting on a single IRC server at a time.
 While this should support Windows I have only tested it in Linux myself.
 
-## DOWNLOAD ##
-You can this project in either
-[zip](http://github.com/IngCr3ation/zipball/master "zip") or
-[tar](http://github.com/IngCr3at1on/tarball/master "tar") formats.
-
-You can also clone the project with [Git](http://git-scm.com "Git") by running:
-
-	$ git clone git://github.com/IngCr3at1on/sircsocket
+## USAGE ##
 
 If developing in git consider adding as a
 [Submodule](http://git-scm.com/docs/git-submodule "Submodule") by running:
 
 	$ git submodule add git://github.com/IngCr3at1on/sircsocket
 
-## USAGE ##
+Once obtaining code simply `#include "IRCSocket.hpp"`
 
 ### Init ###
 `bool Init()`	
