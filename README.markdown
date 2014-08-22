@@ -11,14 +11,14 @@ While this should support Windows I have only tested it in Linux myself.
 ## USAGE ##
 
 If developing in git consider adding as a
-[Submodule](http://git-scm.com/docs/git-submodule "Submodule") by running:
+[submodule](http://git-scm.com/docs/git-submodule "submodule") by running:
 
 	$ git submodule add git://github.com/IngCr3at1on/sircsocket
 
 Once obtaining code simply `#include "IRCSocket.hpp"`
 
 ### Init ###
-`bool Init()`	
+`bool Init()`
 Initiates IRC Socket before connecting, returns true on success.
 
 ### Connect ###
