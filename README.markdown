@@ -4,8 +4,9 @@ _Simple IRCSocket_ is a simple IRC Socket written for C++ . It is originally
 taken from an IRCClient developed by Fredi Machado and therefore retains the
 same license.
 
-## Limitations ##
+## LIMITATIONS ##
 Only allows for connecting on a single IRC server at a time.
+
 While this should support Windows I have only tested it in Linux myself.
 
 ## USAGE ##

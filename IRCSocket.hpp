@@ -29,10 +29,12 @@ Changes from original:
 	Added namespace.
 	Converted to header only library.
 	Changed cout usage to cerr.
+	Removed class in lieu of namespacing.
 
 TODO:
 	Test Windows functionality.
 	Allow for connecting to multiple servers and multiple channels.
+	Possibly rewrite to support C and C++.
 *******************************************************************************/
 
 #ifndef _IRCSOCKET_H_
@@ -60,89 +62,85 @@ TODO:
 #define MAXDATASIZE 4096
 
 namespace sircsocket {
-	class IRCSocket{
-		public:
-			bool Init() {
-				if((_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
-					std::cerr << "Socket error." << std::endl;
-					return false;
-				}
+	int _socket;
+	bool _connected;
 
-				int on = 1;
-				if(setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, (char const*)&on, sizeof(on)) == -1) {
-					std::cerr << "Invalid socket." << std::endl;
-					return false;
-				}
+	bool Init() {
+		if((_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
+			std::cerr << "Socket error." << std::endl;
+			return false;
+		}
 
-				fcntl(_socket, F_SETFL, O_NONBLOCK);
-				fcntl(_socket, F_SETFL, O_ASYNC);
+		int on = 1;
+		if(setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, (char const*)&on, sizeof(on)) == -1) {
+			std::cerr << "Invalid socket." << std::endl;
+			return false;
+		}
 
-				return true;
+		fcntl(_socket, F_SETFL, O_NONBLOCK);
+		fcntl(_socket, F_SETFL, O_ASYNC);
+
+		return true;
+	}
+
+	bool Connect(char const* host, int port) {
+		hostent* he;
+
+		if(!(he = gethostbyname(host))) {
+			std::cerr << "Could not resolve host: " << host << std::endl;
+			return false;
+		}
+
+		sockaddr_in addr;
+
+		addr.sin_family = AF_INET;
+		addr.sin_port = htons(port);
+		addr.sin_addr = *((const in_addr*)he->h_addr);
+		memset(&(addr.sin_zero), '\0', 8);
+
+		if(connect(_socket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
+			std::cerr << "Could not connect to: " << host << std::endl;
+			closesocket(_socket);
+			return false;
+		}
+
+		_connected = true;
+		return true;
+	}
+
+	void Disconnect() {
+		if(_connected) {
+			closesocket(_socket);
+			_connected = false;
+		}
+	}
+
+	bool Connected() { return _connected; }
+
+	bool SendData(char const* data) {
+		if(_connected) {
+			if(send(_socket, data, strlen(data), 0) == -1) {
+				return false;
 			}
+			return true;
+		}
+	}
 
-			bool Connect(char const* host, int port) {
-				hostent* he;
+	std::string ReceiveData() {
+		char buffer[MAXDATASIZE];
 
-				if(!(he = gethostbyname(host))) {
-					std::cerr << "Could not resolve host: " << host << std::endl;
-					return false;
-				}
+		memset(buffer, 0, MAXDATASIZE);
 
-				sockaddr_in addr;
+		int bytes = recv(_socket, buffer, MAXDATASIZE - 1, 0);
 
-				addr.sin_family = AF_INET;
-				addr.sin_port = htons(port);
-				addr.sin_addr = *((const in_addr*)he->h_addr);
-				memset(&(addr.sin_zero), '\0', 8);
+		if(bytes > 0) {
+			return std::string(buffer);
+		} else {
+			Disconnect();
+		}
 
-				if(connect(_socket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
-					std::cerr << "Could not connect to: " << host << std::endl;
-					closesocket(_socket);
-					return false;
-				}
-
-				_connected = true;
-				return true;
-			}
-
-			void Disconnect() {
-				if(_connected) {
-					closesocket(_socket);
-					_connected = false;
-				}
-			}
-
-			bool Connected() { return _connected; }
-
-			bool SendData(char const* data) {
-				if(_connected) {
-					if(send(_socket, data, strlen(data), 0) == -1) {
-						return false;
-					}
-					return true;
-				}
-			}
-
-			std::string ReceiveData() {
-				char buffer[MAXDATASIZE];
-
-				memset(buffer, 0, MAXDATASIZE);
-
-				int bytes = recv(_socket, buffer, MAXDATASIZE - 1, 0);
-
-				if(bytes > 0) {
-					return std::string(buffer);
-				} else {
-					Disconnect();
-				}
-
-				return "";
-			}
-
-		private:
-			int _socket;
-			bool _connected;
-	}; // class IRCSocket
+		return "";
+	}
 } // namespace sircsocket
 
 #endif // _IRCSOCKET_H_
