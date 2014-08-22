@@ -18,7 +18,7 @@ You can also clone the project with [Git](http://git-scm.com "Git") by running:
 	$ git clone git://github.com/IngCr3at1on/sircsocket
 
 If developing in git consider adding as a
-[Submodule](http://git-scm.com/docs/git-submodule "Submodule) by running:
+[Submodule](http://git-scm.com/docs/git-submodule "Submodule") by running:
 
 	$ git submodule add git://github.com/IngCr3at1on/sircsocket
 
