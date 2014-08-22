@@ -26,8 +26,8 @@ Simple IRC Socket Handling:
 	All comments were added by me (Nathan) when updating for use as a library.
 
 Changes from original:
-	Updated .h headers w/ .hpp headers.
 	Added namespace.
+	Converted to header only library.
 	Changed cout usage to cerr.
 
 TODO:

@@ -19,26 +19,32 @@ Once obtaining code simply `#include "IRCSocket.hpp"`
 
 ### Init ###
 `bool Init()`
+
 Initiates IRC Socket before connecting, returns true on success.
 
 ### Connect ###
 `bool Connect(char const* host, int port)`
+
 Connects to a given host and port number, returns true on success.
 
 ### Connected ###
 `bool Connected()`
+
 Returns true if currently connected.
 
 ### Disconnect ###
 `void Disconnect()`
+
 Disconnect from the current IRC session.
 
 ### SendData ###
 `bool SendData(char const* data)`
+
 Send data to the current IRC server, returns true on success.
 
 ### ReceiveData ###
 `std::string ReceiveData()`
+
 Returns a string containing the buffered data from the current IRC session.
 Receives data in raw bytes, if bytes are less than 0 this will force a disconnect.
 
